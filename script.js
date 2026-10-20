@@ -306,7 +306,7 @@ const TRACK = { title: 'Название трека', cover: 'images/cover.jpg',
 const audio = document.getElementById('global-audio');
 const fp = document.getElementById('floatPlayer');
 const AUP = PROJECTS.find(p => p.type === 'audio'); // трек и название берём из карточки-аудио
-if (AUP) { TRACK.project = AUP.id; TRACK.title = AUP.title; if (AUP.audioSrc) audio.src = AUP.audioSrc; }
+if (false) { /* Плеер временно отключен, пока нет файлов */ }
 const coverImg = () => '<img class="ap-cover" src="' + TRACK.cover + '" alt="Обложка трека (заглушка)" onerror="this.onerror=null;this.src=\'' + TRACK.fallback + '\'">';
 const progHTML = '<input class="rng ap-prog" type="range" min="0" max="1000" value="0" aria-label="Перемотка">';
 const volHTML = '<label class="ap-vol">VOL <input class="rng ap-volume" type="range" min="0" max="100" aria-label="Громкость"></label>';
@@ -328,7 +328,7 @@ function syncPlayers() {
   });
 }
 ['play', 'pause', 'timeupdate', 'volumechange', 'loadedmetadata', 'durationchange', 'ended', 'error'].forEach(ev => audio.addEventListener(ev, syncPlayers));
-fp.innerHTML = playerHTML(false);
+// fp.innerHTML = playerHTML(false);
 function setFloat(collapsed) { fp.classList.toggle('collapsed', collapsed); fp.querySelector('.ap-cover-btn').setAttribute('aria-expanded', !collapsed); }
 setFloat(matchMedia('(max-width: 700px)').matches); // на телефоне стартует свёрнутым
 function openProject() {
