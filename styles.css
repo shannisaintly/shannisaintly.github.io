@@ -648,36 +648,52 @@ body { padding-bottom: 96px; } /* контент не уходит под пле
   }
 }
 
-/* ===== МОБИЛЬНЫЕ ФИКСЫ ДЛЯ МОДАЛОК И КАРТИНОК ===== */
+/* ===== МОБИЛЬНЫЕ ФИКСЫ ДЛЯ МОДАЛОК, ТЕКСТА И КАРУСЕЛИ ===== */
 @media (max-width: 700px) {
   /* 1. Окно на весь экран, чтобы было больше места для текста */
   .modal { 
     padding: 10px !important; 
   }
   .modal-box { 
-    max-height: 95vh !important; /* почти на весь экран */
+    max-height: 95vh !important; 
     width: 100% !important; 
   }
   
-  /* 2. Убираем выравнивание по ширине на телефонах (убирает огромные пробелы) */
+  /* 2. Убираем выравнивание по ширине на телефонах */
   .modal-text p {
     text-align: left !important; 
     hyphens: none !important;
   }
   
-  /* 3. Делаем карусель больше и удобнее */
-  .car-view { 
-    border-width: 1px !important; /* тонкая рамка */
-  }
-  .btn.car-btn { 
-    width: 44px !important; /* Крупные кнопки для пальцев */
-    height: 44px !important; 
-    background: var(--surface) !important;
-    border: 2px solid var(--border) !important;
-  }
-  
-  /* 4. Текст в карточках (Задача, Роль) делаем чуть меньше, чтобы влезало */
+  /* 3. Текст в карточках делаем чуть меньше */
   .case-block p { 
     font-size: 14px !important; 
+  }
+
+  /* 4. Делаем карусель большой и убираем жесткие рамки */
+  .car-view {
+    aspect-ratio: auto !important; /* Убираем пропорции 16:9 */
+    max-height: 70vh !important;   /* Картинка может занимать до 70% высоты экрана */
+    background: var(--bg) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  
+  .car-img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important; /* Картинка вписывается целиком, не обрезаясь */
+    max-height: 70vh !important;
+  }
+  
+  /* Кнопки листания делаем крупными и заметными */
+  .btn.car-btn {
+    width: 40px !important;
+    height: 60px !important;
+    background: rgba(30, 42, 69, 0.8) !important; /* Темная подложка */
+    color: #fff !important;
+    border: 1px solid var(--border) !important;
+    font-size: 24px !important;
   }
 }

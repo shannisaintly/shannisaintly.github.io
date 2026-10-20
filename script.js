@@ -203,8 +203,8 @@ function blocksHTML(p) {
 /* КАРУСЕЛЬ: стрелки, точки-квадратики, счётчик «1 / 5», клавиши ← → */
 function carouselHTML(imgs) {
   const many = imgs.length > 1;
-  // ДОБАВЛЕН onclick="openLightbox(this.src)" и style="cursor:zoom-in;"
-  return '<div class="car" role="group" aria-roledescription="карусель" aria-label="Слайды"><div class="car-view"><img class="car-img" alt="" style="cursor:zoom-in;" onclick="openLightbox(this.src)"><span class="car-count"></span>' +
+  // Передаем в лайтбокс индекс текущего слайда (0, 1, 2...)
+  return '<div class="car" role="group" aria-roledescription="карусель" aria-label="Слайды"><div class="car-view"><img class="car-img" alt="" style="cursor:zoom-in;" onclick="openLightbox(' + car.i + ')"><span class="car-count"></span>' +
     (many ? '<button type="button" class="btn car-btn car-prev" aria-label="Предыдущий слайд">‹</button><button type="button" class="btn car-btn car-next" aria-label="Следующий слайд">›</button>' : '') + '</div>' +
     (many ? '<div class="car-dots">' + imgs.map((_, k) => '<button type="button" class="car-dot" data-i="' + k + '" aria-label="Слайд ' + (k + 1) + '"></button>').join('') + '</div>' : '') + '</div>';
 }
@@ -348,16 +348,59 @@ document.addEventListener('input', e => {
 });
 syncPlayers();
 
-/* ЛАЙТБОКС: полноэкранный просмотр картинок из карусели */
-window.openLightbox = function(src) {
+/* ЛАЙТБОКС: полноэкранный просмотр со свайпами и стрелками */
+window.openLightbox = function(startIndex) {
+  let currentIdx = startIndex;
+  const imgs = car.imgs; // Берем текущий массив картинок из глобальной переменной car
+  
   const lb = document.createElement('div');
-  lb.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.9);display:flex;align-items:center;justify-content:center;cursor:zoom-out;padding:20px;';
+  lb.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.95);display:flex;align-items:center;justify-content:center;user-select:none;';
+  
+  // Кнопка закрытия
+  const closeBtn = document.createElement('div');
+  closeBtn.innerHTML = '&times;';
+  closeBtn.style.cssText = 'position:absolute;top:20px;right:20px;color:#fff;font-size:40px;cursor:pointer;z-index:10;line-height:1;';
+  closeBtn.onclick = (e) => { e.stopPropagation(); lb.remove(); };
+  
+  // Картинка
+  const img = document.createElement('img');
+  img.style.cssText = 'max-width:100vw;max-height:100vh;object-fit:contain;pointer-events:none;';
+  
+  // Функция обновления картинки
+  function update() {
+    img.src = imgs[currentIdx];
+  }
+  update();
+  
+  // Стрелки (если картинок больше одной)
+  if (imgs.length > 1) {
+    const prev = document.createElement('div');
+    prev.innerHTML = '‹';
+    prev.style.cssText = 'position:absolute;left:10px;color:#fff;font-size:60px;cursor:pointer;padding:20px;z-index:10;';
+    prev.onclick = (e) => { e.stopPropagation(); currentIdx = (currentIdx - 1 + imgs.length) % imgs.length; update(); };
+    
+    const next = document.createElement('div');
+    next.innerHTML = '›';
+    next.style.cssText = 'position:absolute;right:10px;color:#fff;font-size:60px;cursor:pointer;padding:20px;z-index:10;';
+    next.onclick = (e) => { e.stopPropagation(); currentIdx = (currentIdx + 1) % imgs.length; update(); };
+    
+    lb.appendChild(prev);
+    lb.appendChild(next);
+
+    // Свайпы для телефона
+    let touchStartX = 0;
+    lb.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
+    lb.addEventListener('touchend', e => {
+      let touchEndX = e.changedTouches[0].screenX;
+      if (touchEndX < touchStartX - 50) { currentIdx = (currentIdx + 1) % imgs.length; update(); } // Свайп влево
+      if (touchEndX > touchStartX + 50) { currentIdx = (currentIdx - 1 + imgs.length) % imgs.length; update(); } // Свайп вправо
+    }, {passive: true});
+  }
+  
+  // Закрытие по клику на фон
   lb.onclick = () => lb.remove();
   
-  const img = document.createElement('img');
-  img.src = src;
-  img.style.cssText = 'max-width:100%;max-height:100%;object-fit:contain;border:2px solid #fff;';
-  
+  lb.appendChild(closeBtn);
   lb.appendChild(img);
   document.body.appendChild(lb);
 };
