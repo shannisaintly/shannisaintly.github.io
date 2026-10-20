@@ -347,16 +347,6 @@ function openProject() {
     setTimeout(() => openModal('au1'), 450);
   }
 }
-document.addEventListener('click', e => {
-  if (e.target.closest('.ap-play')) { audio.paused ? audio.play().catch(() => {}) : audio.pause(); return; }
-  if (e.target.closest('.ap-open')) { openProject(); return; }
-  if (e.target.closest('.ap-cover-btn')) setFloat(!fp.classList.contains('collapsed'));
-});
-document.addEventListener('input', e => {
-  if (e.target.matches('.ap-prog')) { if (isFinite(audio.duration)) audio.currentTime = e.target.value / 1000 * audio.duration; }
-  else if (e.target.matches('.ap-volume')) audio.volume = e.target.value / 100;
-});
-syncPlayers();
 
 /* ЛАЙТБОКС: полноэкранный просмотр со свайпами и стрелками */
 window.openLightbox = function(startIndex) {
