@@ -316,6 +316,7 @@ function playerHTML(big) {
   return '<button type="button" class="ap-cover-btn" aria-label="Свернуть или развернуть плеер" aria-expanded="true">' + coverImg() + '</button><div class="ap-main"><div class="ap-title"></div>' + progHTML + volHTML + '</div><div class="ap-btns">' + play + '<button type="button" class="btn ap-btn ap-open" aria-label="Открыть в портфолио" title="Открыть в портфолио">↗</button></div>';
 }
 function syncPlayers() {
+  if (!document.querySelector('.ap')) return;
   const d = audio.duration, pct = isFinite(d) && d > 0 ? audio.currentTime / d * 100 : 0;
   const title = audio.error ? 'Файл ' + audio.getAttribute('src') + ' не найден' : TRACK.title;
   document.querySelectorAll('.ap').forEach(p => {
@@ -330,7 +331,7 @@ function syncPlayers() {
 ['play', 'pause', 'timeupdate', 'volumechange', 'loadedmetadata', 'durationchange', 'ended', 'error'].forEach(ev => audio.addEventListener(ev, syncPlayers));
 // fp.innerHTML = playerHTML(false);
 function setFloat(collapsed) { fp.classList.toggle('collapsed', collapsed); fp.querySelector('.ap-cover-btn').setAttribute('aria-expanded', !collapsed); }
-setFloat(matchMedia('(max-width: 700px)').matches); // на телефоне стартует свёрнутым
+// setFloat(matchMedia('(max-width: 700px)').matches); // на телефоне стартует свёрнутым
 function openProject() {
   const card = cards.find(c => c.dataset.id === TRACK.project); if (!card) return;
   if (card.hidden) document.querySelector('.filter[data-filter="all"]').click();
