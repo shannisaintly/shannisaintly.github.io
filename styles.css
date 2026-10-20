@@ -628,3 +628,22 @@ body { padding-bottom: 96px; } /* контент не уходит под пле
     animation: none !important; 
   }
 }
+
+/* ===== ФИКС МЕНЮ НА ТЕЛЕФОНАХ ===== */
+@media (max-width: 600px) {
+  /* Сжимаем отступы между кнопками */
+  .nav-links { 
+    gap: 4px !important; 
+  }
+
+  /* Уменьшаем сами кнопки и текст внутри них */
+  .nav-links a { 
+    padding: 4px 8px !important; 
+    font-size: 12px !important; 
+  }
+
+  /* Убираем лишние отступы у контейнера, чтобы дать место кнопкам */
+  .nav .container { 
+    padding: 0 10px !important; 
+  }
+}
