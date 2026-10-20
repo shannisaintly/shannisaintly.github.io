@@ -587,3 +587,44 @@ body { padding-bottom: 96px; } /* контент не уходит под пле
   color: var(--text-muted);
   font-style: italic;
 }
+
+/* ===== ФИКСЫ ДЛЯ МОБИЛОК И АВАТАРКИ ===== */
+
+/* 1. Аватарка вверху пузыря (как в мессенджерах) */
+.about {
+  display: flex;
+  align-items: flex-start; /* было flex-end, теперь прижимаем к верху */
+  gap: 22px;
+}
+
+/* 2. Отключаем тяжелые анимации на мобильных, чтобы не тормозило */
+@media (max-width: 700px) {
+  /* Отключаем анимацию шторки при скролле */
+  .reveal, .reveal.in { 
+    clip-path: none !important; 
+    transition: none !important; 
+  }
+  
+  /* Отключаем ступенчатое появление карточек, они просто появляются */
+  .card.enter { 
+    animation: none !important; 
+    opacity: 1 !important; 
+    clip-path: none !important; 
+  }
+  
+  /* Убираем задержку перед появлением карточек */
+  .card {
+    transition: opacity 0.2s ease !important; /* оставляем только легкий фейд для фильтра */
+  }
+
+  /* Отключаем анимацию открытия окон навыков */
+  .win.play, 
+  .win.lines .win-pad :is(h4, p, li) { 
+    animation: none !important; 
+  }
+  
+  /* Модалка открывается без задержек */
+  .modal:not([hidden]) .modal-box { 
+    animation: none !important; 
+  }
+}
