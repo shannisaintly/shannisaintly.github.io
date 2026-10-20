@@ -647,3 +647,37 @@ body { padding-bottom: 96px; } /* контент не уходит под пле
     padding: 0 10px !important; 
   }
 }
+
+/* ===== МОБИЛЬНЫЕ ФИКСЫ ДЛЯ МОДАЛОК И КАРТИНОК ===== */
+@media (max-width: 700px) {
+  /* 1. Окно на весь экран, чтобы было больше места для текста */
+  .modal { 
+    padding: 10px !important; 
+  }
+  .modal-box { 
+    max-height: 95vh !important; /* почти на весь экран */
+    width: 100% !important; 
+  }
+  
+  /* 2. Убираем выравнивание по ширине на телефонах (убирает огромные пробелы) */
+  .modal-text p {
+    text-align: left !important; 
+    hyphens: none !important;
+  }
+  
+  /* 3. Делаем карусель больше и удобнее */
+  .car-view { 
+    border-width: 1px !important; /* тонкая рамка */
+  }
+  .btn.car-btn { 
+    width: 44px !important; /* Крупные кнопки для пальцев */
+    height: 44px !important; 
+    background: var(--surface) !important;
+    border: 2px solid var(--border) !important;
+  }
+  
+  /* 4. Текст в карточках (Задача, Роль) делаем чуть меньше, чтобы влезало */
+  .case-block p { 
+    font-size: 14px !important; 
+  }
+}

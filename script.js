@@ -203,7 +203,8 @@ function blocksHTML(p) {
 /* КАРУСЕЛЬ: стрелки, точки-квадратики, счётчик «1 / 5», клавиши ← → */
 function carouselHTML(imgs) {
   const many = imgs.length > 1;
-  return '<div class="car" role="group" aria-roledescription="карусель" aria-label="Слайды"><div class="car-view"><img class="car-img" alt=""><span class="car-count"></span>' +
+  // ДОБАВЛЕН onclick="openLightbox(this.src)" и style="cursor:zoom-in;"
+  return '<div class="car" role="group" aria-roledescription="карусель" aria-label="Слайды"><div class="car-view"><img class="car-img" alt="" style="cursor:zoom-in;" onclick="openLightbox(this.src)"><span class="car-count"></span>' +
     (many ? '<button type="button" class="btn car-btn car-prev" aria-label="Предыдущий слайд">‹</button><button type="button" class="btn car-btn car-next" aria-label="Следующий слайд">›</button>' : '') + '</div>' +
     (many ? '<div class="car-dots">' + imgs.map((_, k) => '<button type="button" class="car-dot" data-i="' + k + '" aria-label="Слайд ' + (k + 1) + '"></button>').join('') + '</div>' : '') + '</div>';
 }
@@ -346,3 +347,17 @@ document.addEventListener('input', e => {
   else if (e.target.matches('.ap-volume')) audio.volume = e.target.value / 100;
 });
 syncPlayers();
+
+/* ЛАЙТБОКС: полноэкранный просмотр картинок из карусели */
+window.openLightbox = function(src) {
+  const lb = document.createElement('div');
+  lb.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.9);display:flex;align-items:center;justify-content:center;cursor:zoom-out;padding:20px;';
+  lb.onclick = () => lb.remove();
+  
+  const img = document.createElement('img');
+  img.src = src;
+  img.style.cssText = 'max-width:100%;max-height:100%;object-fit:contain;border:2px solid #fff;';
+  
+  lb.appendChild(img);
+  document.body.appendChild(lb);
+};
