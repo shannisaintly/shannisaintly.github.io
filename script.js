@@ -236,7 +236,7 @@ function openModal(id) {
   } else if (p.text) html += '<div class="modal-text">' + textHTML(p.text) + '</div>';
   body.innerHTML = html + blocksHTML(p);
   showSlide(0);
-  syncPlayers();
+  // syncPlayers();
   modal.hidden = false;
   // «загрузка» 0.5 с: полосатый индикатор, затем содержимое
   body.hidden = true; loader.hidden = false; clearTimeout(loadT);
@@ -300,25 +300,27 @@ wins.forEach(w => { w.querySelectorAll('.win-pad h4, .win-pad p, .win-pad li').f
 const wio = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.remove('pre'); e.target.classList.add('play', 'lines'); wio.unobserve(e.target); } }), { threshold: 0.1 });
 wins.forEach(w => wio.observe(w));
 
-/* ===== АУДИОПЛЕЕР: один <audio id="global-audio"> и несколько пультов (.ap), без автоплея ===== */
-/* Название, обложку и проект для кнопки «Открыть в портфолио» меняем здесь */
+/* ===== АУДИОПЛЕЕР: ВРЕМЕННО ОТКЛЮЧЕН ===== */
+/* 
 const TRACK = { title: 'Название трека', cover: 'images/cover.jpg', fallback: 'images/mini-lit-ai.png', project: 'au1' };
 const audio = document.getElementById('global-audio');
 const fp = document.getElementById('floatPlayer');
-const AUP = PROJECTS.find(p => p.type === 'audio'); // трек и название берём из карточки-аудио
-if (false) { /* Плеер временно отключен, пока нет файлов */ }
+const AUP = PROJECTS.find(p => p.type === 'audio'); 
+
 const coverImg = () => '<img class="ap-cover" src="' + TRACK.cover + '" alt="Обложка трека (заглушка)" onerror="this.onerror=null;this.src=\'' + TRACK.fallback + '\'">';
 const progHTML = '<input class="rng ap-prog" type="range" min="0" max="1000" value="0" aria-label="Перемотка">';
 const volHTML = '<label class="ap-vol">VOL <input class="rng ap-volume" type="range" min="0" max="100" aria-label="Громкость"></label>';
+
 function playerHTML(big) {
   const play = '<button type="button" class="btn ap-btn ap-play" aria-label="Играть">▶</button>';
   if (big) return '<div class="ap-cover-wrap">' + coverImg() + '</div><div class="ap-main"><div class="ap-title"></div>' + progHTML + '<div class="ap-row">' + play + volHTML + '</div></div>';
   return '<button type="button" class="ap-cover-btn" aria-label="Свернуть или развернуть плеер" aria-expanded="true">' + coverImg() + '</button><div class="ap-main"><div class="ap-title"></div>' + progHTML + volHTML + '</div><div class="ap-btns">' + play + '<button type="button" class="btn ap-btn ap-open" aria-label="Открыть в портфолио" title="Открыть в портфолио">↗</button></div>';
 }
+
 function syncPlayers() {
   if (!document.querySelector('.ap')) return;
   const d = audio.duration, pct = isFinite(d) && d > 0 ? audio.currentTime / d * 100 : 0;
-  const title = audio.error ? 'Файл ' + audio.getAttribute('src') + ' не найден' : TRACK.title;
+  const title = audio.error ? 'Файл не найден' : TRACK.title;
   document.querySelectorAll('.ap').forEach(p => {
     p.classList.toggle('playing', !audio.paused);
     p.querySelector('.ap-title').textContent = title;
@@ -328,15 +330,22 @@ function syncPlayers() {
     if (b) { b.textContent = audio.paused ? '▶' : '❚❚'; b.setAttribute('aria-label', audio.paused ? 'Играть' : 'Пауза'); }
   });
 }
-['play', 'pause', 'timeupdate', 'volumechange', 'loadedmetadata', 'durationchange', 'ended', 'error'].forEach(ev => audio.addEventListener(ev, syncPlayers));
-// fp.innerHTML = playerHTML(false);
-function setFloat(collapsed) { fp.classList.toggle('collapsed', collapsed); fp.querySelector('.ap-cover-btn').setAttribute('aria-expanded', !collapsed); }
-// setFloat(matchMedia('(max-width: 700px)').matches); // на телефоне стартует свёрнутым
+*/
+
+/* Теперь скрипт идет дальше, не спотыкаясь об плеер */
+
+// Восстанавливаем открытие проектов, но без вызова syncPlayers
 function openProject() {
-  const card = cards.find(c => c.dataset.id === TRACK.project); if (!card) return;
-  if (card.hidden) document.querySelector('.filter[data-filter="all"]').click();
-  card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  setTimeout(() => openModal(TRACK.project), 450);
+  // Здесь мы не используем TRACK и audio, чтобы не падало
+  const card = document.querySelector('.card[data-id="au1"]'); 
+  if (card) {
+    if (card.hidden) {
+      const btn = document.querySelector('.filter[data-filter="all"]');
+      if (btn) btn.click();
+    }
+    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setTimeout(() => openModal('au1'), 450);
+  }
 }
 document.addEventListener('click', e => {
   if (e.target.closest('.ap-play')) { audio.paused ? audio.play().catch(() => {}) : audio.pause(); return; }
