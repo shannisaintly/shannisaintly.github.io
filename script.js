@@ -407,32 +407,48 @@ window.openLightbox = function(startIndex) {
 
 /* ===== ССЫЛКИ НА КОНКРЕТНЫЕ МАТЕРИАЛЫ И КАТЕГОРИИ ===== */
 
+/* Поддерживаем и единственное, и множественное число */
+const CATEGORY_HASH = {
+  presentation: 'presentation',
+  presentations: 'presentation',
+  video: 'video',
+  videos: 'video',
+  audio: 'audio',
+  audios: 'audio',
+  text: 'text',
+  texts: 'text',
+  gallery: 'gallery',
+  galleries: 'gallery'
+};
+
 function openFromHash() {
   const id = decodeURIComponent(location.hash.slice(1));
   if (!id) return;
 
-  // Ссылки на категории: #presentation, #video, #audio, #text, #gallery
-  const categories = ['presentation', 'video', 'audio', 'text', 'gallery'];
-  if (categories.includes(id)) {
+  // Категория?
+  if (CATEGORY_HASH[id]) {
+    const filter = document.querySelector('.filter[data-filter="' + CATEGORY_HASH[id] + '"]');
     document.getElementById('portfolio')?.scrollIntoView({ behavior: 'smooth' });
+    // кликаем чуть позже, чтобы скролл начался
     setTimeout(() => {
-      document.querySelector('.filter[data-filter="' + id + '"]')?.click();
-    }, 400);
+      if (filter) filter.click();
+      else console.warn('Фильтр не найден:', CATEGORY_HASH[id]);
+    }, 500);
     return;
   }
 
-  // Ссылки на конкретные материалы
-  if (!PROJECTS.some(p => p.id === id)) return;
+  // Конкретный материал?
+  if (!PROJECTS.some(p => p.id === id)) {
+    console.warn('Проект с таким id не найден:', id);
+    return;
+  }
   document.getElementById('portfolio')?.scrollIntoView({ behavior: 'smooth' });
-  setTimeout(() => openModal(id), 400);
+  setTimeout(() => openModal(id), 500);
 }
 
-/* Открытие при загрузке страницы по прямой ссылке */
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', openFromHash);
 } else {
   openFromHash();
 }
-
-/* Реакция на смену хэша */
 window.addEventListener('hashchange', openFromHash);
