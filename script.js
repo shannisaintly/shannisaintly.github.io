@@ -405,25 +405,34 @@ window.openLightbox = function(startIndex) {
   document.body.appendChild(lb);
 };
 
-/* ===== ССЫЛКИ НА КОНКРЕТНЫЕ МАТЕРИАЛЫ ===== */
-/* Формат: site.com/#<id-проекта>  →  например site.com/#zr или site.com/#bsolutno-ne-smeshhnoe-video-o-pravilah */
+/* ===== ССЫЛКИ НА КОНКРЕТНЫЕ МАТЕРИАЛЫ И КАТЕГОРИИ ===== */
 
 function openFromHash() {
-  const id = decodeURIComponent(location.hash.slice(1)); // убираем #
+  const id = decodeURIComponent(location.hash.slice(1));
   if (!id) return;
-  const exists = PROJECTS.some(p => p.id === id);
-  if (!exists) return;
 
-  // Прокручиваем к секции портфолио, чтобы контекст был понятен
-  const section = document.getElementById('portfolio');
-  if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // Ссылки на категории: #presentation, #video, #audio, #text, #gallery
+  const categories = ['presentation', 'video', 'audio', 'text', 'gallery'];
+  if (categories.includes(id)) {
+    document.getElementById('portfolio')?.scrollIntoView({ behavior: 'smooth' });
+    setTimeout(() => {
+      document.querySelector('.filter[data-filter="' + id + '"]')?.click();
+    }, 400);
+    return;
+  }
 
-  // Небольшая задержка, чтобы скролл начался, потом открываем модалку
+  // Ссылки на конкретные материалы
+  if (!PROJECTS.some(p => p.id === id)) return;
+  document.getElementById('portfolio')?.scrollIntoView({ behavior: 'smooth' });
   setTimeout(() => openModal(id), 400);
 }
 
 /* Открытие при загрузке страницы по прямой ссылке */
-window.addEventListener('load', openFromHash);
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', openFromHash);
+} else {
+  openFromHash();
+}
 
-/* Если пользователь меняет hash вручную или кликает ссылку — тоже реагируем */
+/* Реакция на смену хэша */
 window.addEventListener('hashchange', openFromHash);
