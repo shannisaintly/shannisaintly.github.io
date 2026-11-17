@@ -404,3 +404,26 @@ window.openLightbox = function(startIndex) {
   lb.appendChild(img);
   document.body.appendChild(lb);
 };
+
+/* ===== ССЫЛКИ НА КОНКРЕТНЫЕ МАТЕРИАЛЫ ===== */
+/* Формат: site.com/#<id-проекта>  →  например site.com/#zr или site.com/#bsolutno-ne-smeshhnoe-video-o-pravilah */
+
+function openFromHash() {
+  const id = decodeURIComponent(location.hash.slice(1)); // убираем #
+  if (!id) return;
+  const exists = PROJECTS.some(p => p.id === id);
+  if (!exists) return;
+
+  // Прокручиваем к секции портфолио, чтобы контекст был понятен
+  const section = document.getElementById('portfolio');
+  if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  // Небольшая задержка, чтобы скролл начался, потом открываем модалку
+  setTimeout(() => openModal(id), 400);
+}
+
+/* Открытие при загрузке страницы по прямой ссылке */
+window.addEventListener('load', openFromHash);
+
+/* Если пользователь меняет hash вручную или кликает ссылку — тоже реагируем */
+window.addEventListener('hashchange', openFromHash);
